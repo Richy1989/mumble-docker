@@ -38,22 +38,23 @@ jobs:
               with:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
-
             - name: Configure target tags (with latest)
               if: ${{ inputs.update_latest }}
-              run: echo "TAGS=mumblevoip/mumble-server:latest, mumblevoip/mumble-server:${{ inputs.mumble_version }}, mumblevoip/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV
+              run: echo "TAGS=richy1989/mumble-server:latest, richy1989/mumble-server:${{ inputs.mumble_version }}, richy1989/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV
 
             - name: Configure target tags (without latest)
               if: ${{ ! inputs.update_latest }}
-              run: echo "TAGS=mumblevoip/mumble-server:${{ inputs.mumble_version }}, mumblevoip/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV
+              run: echo "TAGS=richy1989/mumble-server:${{ inputs.mumble_version }}, richy1989/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV
                 
             - name: Build and push
-              uses: docker/build-push-action@v5
+              uses: docker/build-push-action@v6
               with:
                 context: .
                 platforms: ${{ inputs.platforms }}
                 push: ${{ inputs.publish }}
                 build-args: |
+                    UID=99
+                    GID=100
                     MUMBLE_VERSION=${{ inputs.mumble_version }}
                 tags: ${{ env.TAGS }}
               env:
