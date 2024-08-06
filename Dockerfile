@@ -61,8 +61,6 @@ ARG MUMBLE_CMAKE_ARGS=""
 RUN /mumble/scripts/clone.sh && /mumble/scripts/build.sh \
 && /mumble/scripts/copy_one_of.sh ./scripts/murmur.ini ./auxiliary_files/mumble-server.ini default_config.ini
 
-
-
 FROM base
 ARG MUMBLE_UID=10000
 ARG MUMBLE_GID=10000
