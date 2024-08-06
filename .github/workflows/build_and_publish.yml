@@ -33,6 +33,15 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+            - name: Checkout private tools
+              uses: actions/checkout@v4
+              with:
+                repository: mumble-voip/mumble
+                path: scripts
+                sparse-checkout: |
+                  scripts
+            - run: echo "version=$( python3 "./scripts/mumble-version.py" )" >> $GITHUB_ENV
+            - run: echo $version
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
             - name: Set up Docker Build
