@@ -77,11 +77,11 @@ RUN mkdir -p /data && chown -R $UID:$GID /data && chown -R $UID:$GID /etc/mumble
 
 USER mumble
 
-COPY --chown=$UID:$GID entrypoint.sh entrypoint.sh
+COPY --chown=$UID:$GID entrypoint.sh /entrypoint.sh
 
 EXPOSE 64738/tcp 64738/udp
 
 VOLUME ["/data"]
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/mumble-server", "-fg"]
 
