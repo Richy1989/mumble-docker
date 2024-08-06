@@ -62,26 +62,23 @@ RUN /mumble/scripts/clone.sh && /mumble/scripts/build.sh \
 && /mumble/scripts/copy_one_of.sh ./scripts/murmur.ini ./auxiliary_files/mumble-server.ini default_config.ini
 
 FROM base
+
 ARG UID=10000
 ARG GID=10000
 
-
+#Add exit 0 to addgroup because if group exists, docker build will stop
 RUN groupadd --gid $GID mumble ; exit 0 && useradd --uid $UID --gid $GID mumble
 
+COPY --chown=$UID:$GID --from=build /mumble/repo/build/mumble-server /usr/bin/mumble-server
+COPY --chown=$UID:$GID --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
 
-COPY --chown=mumble:mumble --from=build /mumble/repo/build/mumble-server /usr/bin/mumble-server
-COPY --chown=mumble:mumble --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
-
-
-RUN mkdir -p /data && chown -R mumble:mumble /data && chown -R mumble:mumble /etc/mumble
+RUN mkdir -p /data && chown -R $UID:$GID /data && chown -R $UID:$GID /etc/mumble
 
 USER mumble
 
-COPY --chown=mumble:mumble entrypoint.sh entrypoint.sh
+COPY --chown=$UID:$GID entrypoint.sh entrypoint.sh
 
 EXPOSE 64738/tcp 64738/udp
-
-
 
 VOLUME ["/data"]
 ENTRYPOINT ["entrypoint.sh"]
