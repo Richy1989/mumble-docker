@@ -62,23 +62,26 @@ RUN /mumble/scripts/clone.sh && /mumble/scripts/build.sh \
 && /mumble/scripts/copy_one_of.sh ./scripts/murmur.ini ./auxiliary_files/mumble-server.ini default_config.ini
 
 FROM base
-ARG MUMBLE_UID=10000
-ARG MUMBLE_GID=10000
+ARG UID=10000
+ARG GID=10000
 
-RUN groupadd --gid $MUMBLE_GID mumble && useradd --uid $MUMBLE_UID --gid $MUMBLE_GID mumble
+RUN groupadd --gid $GID mumble && useradd --uid $UID --gid $GID mumble
 
 COPY --chown=mumble:mumble --from=build /mumble/repo/build/mumble-server /usr/bin/mumble-server
 COPY --chown=mumble:mumble --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
+
 
 RUN mkdir -p /data && chown -R mumble:mumble /data && chown -R mumble:mumble /etc/mumble
 
 USER mumble
 
+COPY --chown=mumble:mumble entrypoint.sh entrypoint.sh
+
 EXPOSE 64738/tcp 64738/udp
 
-COPY --chown=mumble:mumble entrypoint.sh /entrypoint.sh
+
 
 VOLUME ["/data"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["/usr/bin/mumble-server", "-fg"]
 
