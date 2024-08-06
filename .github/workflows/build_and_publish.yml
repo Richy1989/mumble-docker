@@ -20,9 +20,9 @@ on:
         type: boolean
     secrets:
         docker_user:
-            required: true
+          required: true
         docker_token:
-                required: true
+          required: true
 
 env:
   TAGS: "none"

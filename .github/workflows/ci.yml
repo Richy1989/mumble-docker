@@ -11,21 +11,24 @@ on:
 jobs:
     build_1_5_634:
         uses: ./.github/workflows/build_and_publish.yml
+        secrets: 
+            docker_user: ${{ secrets.DOCKERHUB_USER }}
+            docker_token: ${{ secrets.DOCKERHUB_KEY }}
         with:
             mumble_version: "v1.5.634"
             docker_version: '0'
             publish: true
             update_latest: true
             platforms: "linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8"
-            docker_user: ${{ secrets.DOCKERHUB_USER }}
-            docker_token: ${{ secrets.DOCKERHUB_KEY }}
+
     build_latest:
         uses: ./.github/workflows/build_and_publish.yml
+        secrets: 
+            docker_user: ${{ secrets.DOCKERHUB_USER }}
+            docker_token: ${{ secrets.DOCKERHUB_KEY }}
         with:
             mumble_version: "latest"
             docker_version: '0'
             publish: true
             update_latest: true
             platforms: "linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8"
-            docker_user: ${{ secrets.DOCKERHUB_USER }}
-            docker_token: ${{ secrets.DOCKERHUB_KEY }}
