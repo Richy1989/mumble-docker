@@ -32,8 +32,6 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
             - name: Checkout private tools
               uses: actions/checkout@v4
               with:
@@ -60,7 +58,6 @@ jobs:
             - name: Build and push
               uses: docker/build-push-action@v6
               with:
-                context: .
                 platforms: ${{ inputs.platforms }}
                 push: ${{ inputs.publish }}
                 build-args: |
