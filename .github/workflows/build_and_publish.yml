@@ -1,15 +1,26 @@
 name: Build and Publish
 
-on:
-  push:
-  schedule:
-    - cron: "0 16 * * 6"
+on: 
+  workflow_call:
+    inputs:
+      mumble_version:
+        required: true
+        type: string
+      docker_version:
+        required: true
+        type: string
+      platforms:
+        required: true
+        type: string
+      publish:
+        required: true
+        type: boolean
+      update_latest:
+        required: true
+        type: boolean
+
 env:
-  mumble_version: "v1.5.634"
-  docker_version: '0'
-  platforms: "linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8"
-  publish: false
-  update_latest: true
+  TAGS: "none"
 
 jobs:
     build:
@@ -27,21 +38,21 @@ jobs:
                 username: ${{ secrets.DOCKERHUB_USER }}
                 password: ${{ secrets.DOCKERHUB_KEY }}
             - name: Configure target tags (with latest)
-              if: ${{ env.update_latest }}
-              run: echo "TAGS=richy1989/mumble-server:latest, richy1989/mumble-server:${{ env.mumble_version }}, richy1989/mumble-server:${{ env.mumble_version }}-${{ env.docker_version }}" >> $GITHUB_ENV
+              if: ${{ inputs.update_latest }}
+              run: echo "TAGS=richy1989/mumble-server:latest, richy1989/mumble-server:${{ inputs.mumble_version }}, richy1989/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV
             - name: Configure target tags (without latest)
-              if: ${{ ! env.update_latest }}
-              run: echo "TAGS=richy1989/mumble-server:${{ env.mumble_version }}, richy1989/mumble-server:${{ env.mumble_version }}-${{ env.docker_version }}" >> $GITHUB_ENV 
+              if: ${{ ! inputs.update_latest }}
+              run: echo "TAGS=richy1989/mumble-server:${{ inputs.mumble_version }}, richy1989/mumble-server:${{ inputs.mumble_version }}-${{ inputs.docker_version }}" >> $GITHUB_ENV 
             - name: Build and push
               uses: docker/build-push-action@v6
               with:
                 context: .
-                platforms: ${{ env.platforms }}
-                push: ${{ env.publish }}
+                platforms: ${{ inputs.platforms }}
+                push: ${{ inputs.publish }}
                 build-args: |
                     UID=99
                     GID=100
-                    MUMBLE_VERSION=${{ env.mumble_version }}
+                    MUMBLE_VERSION=${{ inputs.mumble_version }}
                 tags: ${{ env.TAGS }}
               env:
-                MUMBLE_VERSION: ${{ env.mumble_version }}
+                MUMBLE_VERSION: ${{ inputs.mumble_version }}
