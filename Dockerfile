@@ -67,7 +67,8 @@ ARG UID=10000
 ARG GID=10000
 
 #Add exit 0 to addgroup because if group exists, docker build will stop
-RUN groupadd --gid $GID mumble ; exit 0 && useradd --uid $UID --gid $GID mumble
+RUN groupadd --gid $GID mumble ; exit 0
+RUN useradd --uid $UID --gid $GID mumble
 
 COPY --chown=$UID:$GID --from=build /mumble/repo/build/mumble-server /usr/bin/mumble-server
 COPY --chown=$UID:$GID --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
