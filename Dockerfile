@@ -65,7 +65,9 @@ FROM base
 ARG UID=10000
 ARG GID=10000
 
-RUN groupadd --gid $GID mumble && useradd --uid $UID --gid $GID mumble
+
+RUN groupadd --gid $GID mumble ; exit 0 && useradd --uid $UID --gid $GID mumble
+
 
 COPY --chown=mumble:mumble --from=build /mumble/repo/build/mumble-server /usr/bin/mumble-server
 COPY --chown=mumble:mumble --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
