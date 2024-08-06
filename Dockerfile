@@ -71,9 +71,12 @@ COPY --chown=mumble:mumble --from=build /mumble/repo/build/mumble-server /usr/bi
 COPY --chown=mumble:mumble --from=build /mumble/repo/default_config.ini /etc/mumble/bare_config.ini
 
 RUN mkdir -p /data && chown -R mumble:mumble /data && chown -R mumble:mumble /etc/mumble
+
 USER mumble
+
 EXPOSE 64738/tcp 64738/udp
-COPY entrypoint.sh /entrypoint.sh
+
+COPY --chown=mumble:mumble entrypoint.sh /entrypoint.sh
 
 VOLUME ["/data"]
 ENTRYPOINT ["/entrypoint.sh"]
