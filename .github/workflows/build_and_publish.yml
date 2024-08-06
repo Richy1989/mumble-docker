@@ -26,6 +26,7 @@ on:
 
 env:
   TAGS: "none"
+  version:
 
 jobs:
     build:
@@ -37,11 +38,10 @@ jobs:
               uses: actions/checkout@v4
               with:
                 repository: mumble-voip/mumble
-                path: scripts
                 sparse-checkout: |
                   scripts
             - run: echo "version=$( python3 "./scripts/mumble-version.py" )" >> $GITHUB_ENV
-            - run: echo $version
+            - run: echo ${{ env.version }}  
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v3
             - name: Set up Docker Build
